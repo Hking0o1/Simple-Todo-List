@@ -1,4 +1,4 @@
-const apiUrl = "https://6863d21388359a373e9672a2.mockapi.io/api/v1/:endpoint";
+const apiUrl = "https://6863d21388359a373e9672a2.mockapi.io/api/v1/todos";
 let todos = [];
 let currentPage = 1;
 const itemsPerPage = 10;
