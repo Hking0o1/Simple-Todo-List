@@ -17,11 +17,11 @@ function showLoading(show) {
 async function fetchTodos() {
   try {
     showLoading(true);
-    const response = await fetch(apiUrl + "?limit=100");
+    const response = await fetch(apiUrl);
     const data = await response.json();
-    todos = data.todos.map(todo => ({
+    todos = data.map(todo => ({
       ...todo,
-      createdAt: new Date(), // Fake a createdAt date
+      createdAt: new Date(todo.createdAt)
     }));
     renderTodos();
   } catch (error) {
@@ -39,11 +39,9 @@ function filterTodos() {
   return todos.filter(todo => {
     const task = todo.todo.toLowerCase();
     const matchesText = task.includes(searchText);
-
     const created = new Date(todo.createdAt);
     const matchesFrom = !from || created >= from;
     const matchesTo = !to || created <= to;
-
     return matchesText && matchesFrom && matchesTo;
   });
 }
@@ -70,19 +68,34 @@ function renderTodos() {
         <button class="btn btn-sm btn-danger delete-btn" data-id="${todo.id}">Delete</button>
       `;
 
-      // Handle checkbox toggle
-      item.querySelector("input").addEventListener("change", (e) => {
-        const id = Number(e.target.dataset.id);
-        const index = todos.findIndex(t => t.id === id);
-        todos[index].completed = e.target.checked;
-        renderTodos();
+      // Toggle completion
+      item.querySelector("input").addEventListener("change", async (e) => {
+        const id = e.target.dataset.id;
+        const completed = e.target.checked;
+        try {
+          await fetch(`${apiUrl}/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ completed })
+          });
+          const index = todos.findIndex(t => t.id === id);
+          todos[index].completed = completed;
+          renderTodos();
+        } catch {
+          alert("Failed to update status");
+        }
       });
 
-      // Handle delete button
-      item.querySelector(".delete-btn").addEventListener("click", () => {
-        const id = Number(item.querySelector(".delete-btn").dataset.id);
-        todos = todos.filter(t => t.id !== id);
-        renderTodos();
+      // Delete task
+      item.querySelector(".delete-btn").addEventListener("click", async () => {
+        const id = item.querySelector(".delete-btn").dataset.id;
+        try {
+          await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+          todos = todos.filter(t => t.id !== id);
+          renderTodos();
+        } catch {
+          alert("Failed to delete task");
+        }
       });
 
       todoList.appendChild(item);
@@ -115,15 +128,19 @@ document.getElementById("todoForm").addEventListener("submit", async e => {
 
   try {
     showLoading(true);
-    const response = await fetch(apiUrl + "/add", {
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ todo: newTodoText, completed: false, userId: 1 })
+      body: JSON.stringify({
+        todo: newTodoText,
+        completed: false,
+        createdAt: new Date().toISOString()
+      })
     });
 
-    const addedTodo = await response.json();
-    addedTodo.createdAt = new Date();
-    todos.unshift(addedTodo);
+    const newTodo = await response.json();
+    newTodo.createdAt = new Date(newTodo.createdAt);
+    todos.unshift(newTodo);
     document.getElementById("todoInput").value = "";
     renderTodos();
   } catch (error) {
@@ -133,7 +150,7 @@ document.getElementById("todoForm").addEventListener("submit", async e => {
   }
 });
 
-// Event Listeners
+// Filters
 searchInput.addEventListener("input", () => {
   currentPage = 1;
   renderTodos();
