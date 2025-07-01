@@ -3,50 +3,99 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Todo List App</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
-</head>
-<body class="bg-light">
-  <div class="container py-4">
-    <h1 class="mb-4 text-center">Todo List</h1>
+  <meta name="author" content="Frontend Developer - Himanshu Kulshrestha">
+  <title>Elegant Todo App | Frontend Assignment</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #e3f2fd, #ffffff);
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-    <!-- Add Todo Form -->
-    <form id="todoForm" class="mb-3">
-      <div class="row g-2">
-        <div class="col-md-8">
-          <input type="text" id="todoInput" class="form-control" placeholder="Enter new todo..." required/>
+    .card {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .todo-item span {
+      font-size: 1.05rem;
+    }
+
+    .form-control:focus {
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .page-link {
+      cursor: pointer;
+    }
+
+    .todo-completed {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    @media (max-width: 576px) {
+      .todo-item span {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="text-center mb-4">
+      <h1 class="fw-bold text-primary">Todo List App</h1>
+      <p class="text-muted">Built as a Frontend Developer Assignment with JS + Bootstrap</p>
+    </div>
+
+    <div class="card p-4 mb-4">
+      <!-- Add Todo Form -->
+      <form id="todoForm">
+        <div class="row g-2 align-items-center">
+          <div class="col-md-8">
+            <input type="text" id="todoInput" class="form-control" placeholder="Add a new task..." required />
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-success w-100" type="submit">+ Add Task</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="card p-4 mb-4">
+      <!-- Filters -->
+      <div class="row g-3">
+        <div class="col-md-4">
+          <input type="text" id="searchInput" class="form-control" placeholder="Search tasks by name..." />
         </div>
         <div class="col-md-4">
-          <button class="btn btn-primary w-100" type="submit">Add Todo</button>
+          <input type="date" id="fromDate" class="form-control" placeholder="From Date" />
         </div>
-      </div>
-    </form>
-
-    <!-- Search and Filter -->
-    <div class="row g-2 mb-3">
-      <div class="col-md-4">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search todos"/>
-      </div>
-      <div class="col-md-4">
-        <input type="date" id="fromDate" class="form-control"/>
-      </div>
-      <div class="col-md-4">
-        <input type="date" id="toDate" class="form-control"/>
+        <div class="col-md-4">
+          <input type="date" id="toDate" class="form-control" placeholder="To Date" />
+        </div>
       </div>
     </div>
 
     <!-- Loading Spinner -->
-    <div id="loading" class="text-center my-3" style="display: none;">
+    <div id="loading" class="text-center my-4" style="display: none;">
       <div class="spinner-border text-primary" role="status"></div>
     </div>
 
     <!-- Todo List -->
-    <ul id="todoList" class="list-group mb-3"></ul>
+    <div class="card p-3 mb-3">
+      <ul id="todoList" class="list-group list-group-flush"></ul>
+    </div>
 
     <!-- Pagination -->
     <nav>
       <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
+
+    <footer class="text-center mt-5 text-muted small">
+      <p>Designed with Passion by Himanshu Kulshreshtha • 2025</p>
+    </footer>
   </div>
 
   <script src="script.js"></script>
